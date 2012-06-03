@@ -4,3 +4,4 @@ man
 compile
 compile-doc
 *.swp
+*.swo
