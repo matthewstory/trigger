@@ -1,0 +1,14 @@
+build_man() {
+    gzip -c - < "$1"
+}
+case "$1" in
+  man)
+    build_ifchanged "$1=d"
+	build_ifchanged `awk '{ print $1; }' <"$1=d"`
+	build_notarget
+	exit 0
+	;;
+esac
+
+#TODO: only rebuild man pages if source changed
+build_man "$2"
