@@ -825,7 +825,7 @@ clean:
 	hassgprm.h \
 	hasshsgr.h \
 	haswaitp.h \
-    hier=yes \
+	hier=yes \
 	home \
 	iopause.h \
 	iopause.o \
@@ -836,7 +836,7 @@ clean:
 	makeinclude \
 	makelib \
 	makescrip \
-    man=yes \
+	man=yes \
 	mkfile \
 	ndelay_off.o \
 	ndelay_on.o \
@@ -879,15 +879,15 @@ clean:
 	taia_sub.o \
 	taia_uint.o \
 	trigger-listen \
-    trigger-listen.1.gz \
+	trigger-listen.1.gz \
 	trigger-listen.o \
 	trigger-pull \
-    trigger-pull.1.gz \
+	trigger-pull.1.gz \
 	trigger-pull.o \
 	trigger-wait \
-    trigger-wait.1.gz
+	trigger-wait.1.gz
 	trigger-wait.o \
 	uint64.h \
 	unix.a \
 	wait_nohang.o \
-    wait_pid.o
+	wait_pid.o
