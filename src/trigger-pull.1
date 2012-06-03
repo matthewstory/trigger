@@ -1,0 +1,33 @@
+.TH trigger\-pull 1
+.SH NAME
+trigger\-pull \- write a non\-blocking byte to a
+.BR fifo (7)
+to pull a trigger
+.SH SYNOPSIS
+.B trigger\-pull
+.I path
+.SH DESCRIPTION
+The
+.B trigger\-pull
+program performs a non\-blocking
+.BR write (2)
+of one byte of data to
+.I path
+.
+.SH "EXIT STATUS"
+The
+.B trigger\-pull
+program exits 100 for incorrect usage and 111 for temporary errors.  It does
+not retry if the
+.BR write (2)
+would have blocked and it ignores the lack of reader on the
+.BR fifo (7)
+.IR path ,
+treating these as successes.
+.SH EXAMPLES
+.BR trigger\-pull \ \./trigger
+.SH "SEE ALSO"
+.BR mkfifo (1),
+.BR trigger\-listen (1),
+.BR trigger\-wait (1),
+.BR fifo (7)

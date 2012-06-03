@@ -1,0 +1,165 @@
+.TH trigger\-listen 1
+.SH NAME
+trigger\-listen \- listen to a
+.BR fifo (7)
+and execute a command
+.SH SYNOPSIS
+.B trigger\-listen
+[
+.B \-UdDqQv1
+.B \-c
+.I limit
+.B \-t
+.I timeout
+.B \-i
+.I interval
+.B \-g
+.I gid
+.B \-u
+.I uid
+]
+.I path
+.I prog
+.SH DESCRIPTION
+The
+.B trigger\-listen
+program listens for input on the
+.BR fifo (7)
+.IR path
+using
+.BR read (2).
+When it receives input
+.B trigger\-listen
+invokes
+.I prog
+and continues to listen for input on
+.IR path .
+An external program pulls the trigger by
+writing a byte of data to
+.IR path .
+The
+.B trigger\-listen
+program does not examine input data.
+.SH OPTIONS
+.B GENERAL OPTIONS
+.TP
+.B \-q
+Quiet.  Do not print error messages.
+.TP
+.B \-Q
+Print error messages. (Default)
+.TP
+.B \-v
+Verbose.  Print both status and error messages.
+.TP
+.B LISTENING OPTIONS
+.TP
+.B -1
+Execute
+.I prog
+immediately upon startup.
+.TP
+.BI \-c limit
+Execute at most
+.I limit
+copies of
+.I prog
+concurrently.  If a trigger pull occurs while
+.I limit
+copies are running,
+.B trigger\-listen
+executes
+.I prog
+as soon as one of the running copies exits.
+.TP
+.BI \-t timeout
+Wait at most
+.I timeout
+seconds for a trigger pull. If
+.I timeout
+seconds elapse without a trigger pull,
+then
+.B trigger\-listen
+pulls its own trigger. (Default: 0)
+.TP
+.BI \-i interval
+Wait at least
+.I interval
+seconds between executions of
+.IR prog .
+If
+.B trigger\-listen
+receives a trigger pull within
+.I interval
+seconds of the last execution,
+.B trigger\-listen
+ executes
+.I prog
+when
+.I interval
+seconds have elapsed. (Default: 0)
+.TP
+.BI \-g gid
+Set the effective group ID to
+.I gid
+using
+.BR setgid (2)
+after preparing to receive trigger pulls.
+.TP
+.BI \-u uid
+Set the effective user ID to
+.I uid
+using
+.BR setuid (2)
+after preparing to receive trigger pulls.
+.TP
+.B \-U
+Set the effective user ID to the
+.BR environ (7)
+variable
+.I UID
+and the effective group ID to the
+.BR environ (7)
+variable
+.I GID
+after preparing to receive trigger pulls.
+Same as
+.B \-g
+.I $GID
+.B \-u
+.IR $UID ,
+where
+.I $UID
+and
+.I $GID
+are typically set by
+.BR envuidgid (8).
+.TP
+.B \-d
+Delete.  Remove and recreate the
+.BR fifo (7)
+.I path
+upon startup. (Default)
+.TP
+.B \-D
+No delete.  Do not remove and recreate
+.I path
+upon startup.
+.SH "EXIT STATUS"
+The
+.B trigger\-listen
+program exits 111 for temporary errors and 100 for
+permanent errors.
+.B trigger\-listen
+exits 0 on success or when terminated by signal.
+.SH EXAMPLES
+.BR trigger\-listen \ \./trigger
+echo 'Hello World!'
+.SH "SEE ALSO"
+.BR mkfifo (1),
+.BR trigger\-pull (1),
+.BR trigger\-wait (1),
+.BR setgid (2),
+.BR setuid (2),
+.BR fifo (7),
+.BR envuidgid (8)

@@ -1,0 +1,83 @@
+.TH trigger\-wait 1
+.SH NAME
+trigger\-wait \- listen to a
+.BR fifo (7)
+and optionally execute a command
+.SH SYNOPSIS
+.B trigger\-wait
+[
+.B \-wWdD
+.B \-t
+.I timeout
+]
+.I path
+[
+.I prog
+]
+.SH DESCRIPTION
+The
+.B trigger\-wait
+program listens for input on the
+.BR fifo (7)
+.I path
+using
+.BR read (2).
+If
+.I prog
+is present,
+.B trigger\-wait
+executes
+.I prog
+and optionally waits for it to complete.
+.SH OPTIONS
+.BI \-t timeout
+Wait at most
+.I timeout
+seconds for a trigger pull.  If
+.I timeout
+seconds elapse without a trigger pull, then
+.B trigger\-wait
+pulls its own trigger.  (Default: 0).
+.TP
+.B \-w
+Wait for
+.I prog
+to complete before exit. (Default)
+.TP
+.B \-W
+Do not wait for
+.I prog
+to complete before exit.
+.TP
+.B \-d
+Delete.  Remove and recreate the
+.BR fifo (7)
+.I path
+upon startup. (Default)
+.TP
+.B \-D
+No delete.  Do not remove and recreate
+.I path
+upon startup.
+.SH EXIT STATUS
+The
+.B trigger\-wait
+program exits 100 for permanent errors and 111 for temporary errors.  It exits
+0 if it received a trigger pull, and 99 otherwise.
+
+.SH EXAMPLES
+Assume that the processor for
+.I /service/foo/log
+executes
+.BR trigger\-pull (1)
+as its dying act: .TP
+cd /service/foo &&
+.B trigger\-wait
+\-t 5 ./trigger\-rotate svc \-a log
+.SH "SEE ALSO"
+.BR mkfifo (1),
+.BR trigger\-pull (1),
+.BR trigger\-listen (1),
+.BR fifo (7)
+.BR multilog(8)
+.BR svc(8)
