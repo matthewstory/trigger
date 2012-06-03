@@ -22,8 +22,10 @@ cp_command() {
 #### MAIN
 
 umask 022
+compile="compile"
+
 test -d package || barf "no package directory"
-test -d compile || barf "no compile directory"
+test -d "$compile" || barf "no compile directory"
 
 here="`env - PATH="$PATH" pwd`"
 
@@ -31,6 +33,21 @@ name="`awk '$1{print $1; exit 0}' package/name`"
 package="`basename "$name"`"
 current="`basename "$here"`"
 parent="`dirname "$here"`"
+
+do_man=0
+test -f "$compile/man=yes" && do_man=1
+do_hier=0
+test -f "$compile/hier=yes" && do_hier=1
+# only if do_man, or do_hier
+#TODO: setup actual support for env variables
+hier_prefix="$TRIGGER_PREFIX"
+test -z "$hier_prefix" && hier_prefix="/usr/local"
+share_path="$TRIGGER_SHARE"
+test -z "$share_path" && share_path="share"
+trigger_section="$TRIGGER_SECTION"
+test -z "$trigger_section" && trigger_section="1"
+man_path="$hier_prefix/$share_path/man/man$trigger_section"
+bin_path="$hier_prefix/bin"
 
 # Link only if working in versioned directory.
 if test "$current" != "$package"
@@ -41,7 +58,7 @@ then
 fi
 
 # Link non-private commands into other directories.
-if test -r package/command-ln
+if test $do_hier -eq 0 -a -r package/command-ln
 then
   awk '$1{print $1; next};{exit 0}' package/command-ln | while read d
   do
@@ -54,9 +71,14 @@ then
 fi
 
 # Copy non-private commands into other directories.
-if test -r package/command-cp
+if test $do_hier -eq 1 -o -r package/command-cp
 then
-  awk '$1{print $1; next};{exit 0}' < package/command-cp | while read d
+  if test $do_hier -eq 1
+  then
+    echo "$bin_path"
+  else
+    awk '$1{print $1; next};{exit 0}' < package/command-cp
+  fi | while read d
   do
     safe mkdir -p "$d"
     safe awk '"PRIVATE" != $2 && "" != $1 { print $1 }' package/commands | while read f
@@ -66,5 +88,13 @@ then
   done
 fi
 
-exit 0
+# install man pages
+if test $do_man -eq 1
+then
+  safe awk '"PRIVATE" != $2 && "" != $1 { print $1 }' package/commands | while read f
+  do
+    safe cp_command "$man_path/$f.$trigger_section.gz" "$compile/$f.$trigger_section.gz"
+  done
+fi
 
+exit 0
