@@ -3,7 +3,7 @@ shout() { echo "package/build: $*" >&2; }
 barf() { shout "fatal: $*"; exit 111; }
 safe() { "$@" || barf "cannot $*"; }
 usage() {
-  shout "usage: package/build [ --help -v -q -f -F -c compile_dir -s src_dir -d dest_dir -b build_cmd ] [ target ... ]"
+  shout "usage: package/build [ --help -v -q -f -F -m -c compile_dir -s src_dir -d dest_dir -b build_cmd ] [ target ... ]"
   exit 100
 }
 
@@ -26,6 +26,7 @@ compile_dir="compile"
 src_dir="src"
 dest_dir="command"
 remove=0
+manpages=0
 build="build"
 
 verbose=""
@@ -47,6 +48,10 @@ do
       ;;
     -F)
       remove=1
+      shift
+      ;;
+    -m)
+      manpages=1
       shift
       ;;
     -c)
@@ -102,6 +107,11 @@ then
   safe $build_cmd "$@"
 else
   safe $build_cmd it
+fi
+
+if test 0 -lt $manpages
+then
+    safe $build_cmd man
 fi
 
 # Install commands.
