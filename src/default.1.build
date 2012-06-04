@@ -10,5 +10,4 @@ case "$1" in
 	;;
 esac
 
-#TODO: only rebuild man pages if source changed
 build_man "$2"
