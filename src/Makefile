@@ -783,21 +783,24 @@ haswaitp.h
 man: \
 default.1.build \
 man=d \
-trigger-listen.1 \
-trigger-pull.1 \
-trigger-wait.1
+trigger-listen.1.gz \
+trigger-pull.1.gz \
+trigger-wait.1.gz
 	sh makefile.build default.1.build man man
 
-trigger-listen.1: \
-default.1.build
+trigger-listen.1.gz: \
+default.1.build \
+trigger-listen.1
 	sh makefile.build default.1.build trigger-listen.1.gz trigger-listen.1
 
-trigger-pull.1: \
-default.1.build
+trigger-pull.1.gz: \
+default.1.build \
+trigger-pull.1
 	sh makefile.build default.1.build trigger-pull.1.gz trigger-pull.1
 
-trigger-wait.1: \
-default.1.build
+trigger-wait.1.gz: \
+default.1.build \
+trigger-wait.1
 	sh makefile.build default.1.build trigger-wait.1.gz trigger-wait.1
 
 clean:
