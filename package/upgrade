@@ -29,10 +29,6 @@ test -d "$compile" || barf "no compile directory"
 
 here="`env - PATH="$PATH" pwd`"
 
-name="`awk '$1{print $1; exit 0}' package/name`"
-package="`basename "$name"`"
-current="`basename "$here"`"
-parent="`dirname "$here"`"
 
 do_man=0
 test -f "$compile/man=yes" && do_man=1
@@ -48,6 +44,12 @@ trigger_section="$TRIGGER_SECTION"
 test -z "$trigger_section" && trigger_section="1"
 man_path="$hier_prefix/$share_path/man/man$trigger_section"
 bin_path="$hier_prefix/bin"
+
+name="$here"
+test $do_hier -eq 0 && name="`awk '$1{print $1; exit 0}' package/name`"
+package="`basename "$name"`"
+current="`basename "$here"`"
+parent="`dirname "$here"`"
 
 # Link only if working in versioned directory.
 if test "$current" != "$package"
